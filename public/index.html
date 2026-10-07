@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assistente com barreira de dados</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="marca">
+      <h1>Assistente corporativo</h1>
+      <p>Demonstração com a empresa fictícia Orion Software. Documentos, código, clientes e pessoas são inventados.</p>
+    </div>
+    <div class="controles">
+      <div class="campo-fase">
+        <span id="rotulo-fase">Etapa do projeto</span>
+        <div class="fase" role="radiogroup" aria-labelledby="rotulo-fase">
+          <label><input type="radio" name="fase" value="1" checked><span>Fase 1: sem servidor interno</span></label>
+          <label><input type="radio" name="fase" value="2"><span>Fase 2: com servidor interno</span></label>
+        </div>
+      </div>
+      <label class="campo-usuario">
+        <span>Usando como</span>
+        <select id="usuario"></select>
+      </label>
+      <div class="modelos" id="modelos" aria-live="polite"></div>
+    </div>
+  </header>
+
+  <nav class="abas" role="tablist">
+    <button role="tab" aria-selected="true" data-aba="perguntar">Perguntar</button>
+    <button role="tab" aria-selected="false" data-aba="chamado">Tratar chamado</button>
+    <button role="tab" aria-selected="false" data-aba="questionario">Questionário de banco</button>
+    <button role="tab" aria-selected="false" data-aba="legado">Documentar legado</button>
+    <button role="tab" aria-selected="false" data-aba="base">Base de conhecimento</button>
+    <button role="tab" aria-selected="false" data-aba="uso">Uso e ROI</button>
+  </nav>
+
+  <main>
+    <!-- Perguntar -->
+    <section class="aba" id="aba-perguntar" role="tabpanel">
+      <div class="grade">
+        <div class="coluna-entrada">
+          <form id="form-perguntar" class="entrada">
+            <label for="pergunta">Pergunta</label>
+            <textarea id="pergunta" rows="4" placeholder="Pergunte sobre políticas, produtos ou processos da empresa"></textarea>
+            <div class="acoes"><button type="submit" class="primario">Perguntar</button></div>
+          </form>
+          <div class="exemplos">
+            <p>Exemplos para a demonstração</p>
+            <div id="exemplos-perguntar" class="chips"></div>
+          </div>
+          <article id="resposta-perguntar" class="resposta vazia">
+            <p class="dica">A resposta aparece aqui, com a fonte de cada afirmação.</p>
+          </article>
+        </div>
+        <aside class="coluna-rota">
+          <div class="rota" id="rota-perguntar"></div>
+          <div class="saida" id="saida-perguntar"></div>
+          <ol class="trilha" id="trilha-perguntar"></ol>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Chamado -->
+    <section class="aba" id="aba-chamado" role="tabpanel" hidden>
+      <div class="grade">
+        <div class="coluna-entrada">
+          <form id="form-chamado" class="entrada">
+            <label for="chamado">Chamado do cliente</label>
+            <textarea id="chamado" rows="11" placeholder="Cole o texto do chamado como ele chegou"></textarea>
+            <div class="acoes">
+              <button type="submit" class="primario">Analisar chamado</button>
+              <button type="button" class="secundario" data-exemplo="chamado.txt" data-alvo="#chamado">Carregar chamado de exemplo</button>
+            </div>
+          </form>
+          <article id="resposta-chamado" class="resposta vazia">
+            <p class="dica">Resumo, severidade, hipóteses, próximos passos e uma resposta para o cliente, para uma pessoa revisar.</p>
+          </article>
+        </div>
+        <aside class="coluna-rota">
+          <div class="rota" id="rota-chamado"></div>
+          <div class="saida" id="saida-chamado"></div>
+          <ol class="trilha" id="trilha-chamado"></ol>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Questionário -->
+    <section class="aba" id="aba-questionario" role="tabpanel" hidden>
+      <div class="cabecalho-aba">
+        <div>
+          <h2>Questionário de segurança de fornecedor</h2>
+          <p>A IA rascunha, uma pessoa revisa. Cada resposta traz fonte, confiança e o caminho que o dado seguiu.</p>
+        </div>
+        <div class="opcoes-questionario">
+          <fieldset class="origem">
+            <legend>De onde veio a planilha</legend>
+            <label><input type="radio" name="origem" value="padronizado" checked> Perguntas padronizadas da casa (classe 1)</label>
+            <label><input type="radio" name="origem" value="cliente"> Arquivo recebido do banco, sob NDA (classe 3)</label>
+          </fieldset>
+          <div class="acoes">
+            <button id="btn-questionario" class="primario">Preencher questionário de exemplo</button>
+            <label class="secundario arquivo">Enviar outro .xlsx<input type="file" id="arquivo-questionario" accept=".xlsx"></label>
+          </div>
+        </div>
+      </div>
+      <div id="resumo-questionario" class="resumo" hidden></div>
+      <div class="tabela-rolagem">
+        <table class="tabela" id="tabela-questionario">
+          <thead><tr><th>Nº</th><th>Pergunta</th><th>Resposta sugerida</th><th>Caminho</th><th>Confiança</th><th>Tempo</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Legado -->
+    <section class="aba" id="aba-legado" role="tabpanel" hidden>
+      <div class="grade">
+        <div class="coluna-entrada">
+          <form id="form-legado" class="entrada">
+            <label for="codigo">Programa legado (COBOL, JCL)</label>
+            <textarea id="codigo" rows="14" class="mono" spellcheck="false" placeholder="Cole aqui o fonte do programa"></textarea>
+            <div class="acoes">
+              <button type="submit" class="primario">Gerar documentação</button>
+              <button type="button" class="secundario" data-exemplo="CALCJUR.cbl" data-alvo="#codigo">Carregar CALCJUR.cbl</button>
+              <button type="button" class="secundario" data-exemplo="CALCJUR.jcl" data-alvo="#codigo">Carregar o JCL</button>
+              <button type="button" class="secundario perigo" data-exemplo="DMSKNORM.cbl" data-alvo="#codigo">Colar código patenteado</button>
+            </div>
+          </form>
+          <article id="resposta-legado" class="resposta vazia">
+            <p class="dica">Na Fase 1 o código não sai da empresa. Na Fase 2 o servidor interno documenta o programa e termina com perguntas para o especialista validar.</p>
+          </article>
+        </div>
+        <aside class="coluna-rota">
+          <div class="rota" id="rota-legado"></div>
+          <div class="saida" id="saida-legado"></div>
+          <ol class="trilha" id="trilha-legado"></ol>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Base -->
+    <section class="aba" id="aba-base" role="tabpanel" hidden>
+      <div class="cabecalho-aba">
+        <div>
+          <h2>O que entra e o que fica de fora</h2>
+          <p id="resumo-base"></p>
+        </div>
+      </div>
+      <div class="tabela-rolagem">
+        <table class="tabela" id="tabela-base">
+          <thead><tr><th>Documento</th><th>Classe</th><th>Origem</th><th>Quem acessa</th><th>Dono</th><th>Revisado em</th><th>Situação</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Uso -->
+    <section class="aba" id="aba-uso" role="tabpanel" hidden>
+      <div class="cabecalho-aba">
+        <div>
+          <h2>Uso, caminhos e estimativa de ganho</h2>
+          <p>Tudo vem do registro de auditoria, que guarda o pedido já mascarado. A estimativa usa as premissas da linha de base, que trocamos pelos números medidos.</p>
+        </div>
+        <button id="btn-atualizar-uso" class="secundario">Atualizar</button>
+      </div>
+      <div id="painel-uso" class="painel-uso"></div>
+      <div class="tabela-rolagem">
+        <table class="tabela" id="tabela-uso">
+          <thead><tr><th>Quando</th><th>Quem</th><th>Fase</th><th>Tipo</th><th>Caminho</th><th>Dados mascarados</th><th>Fontes citadas</th><th>Tempo</th><th>Motivo</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+[
+  { "id": "ana",   "nome": "Ana Lima",     "area": "Comercial / Pré-venda",   "grupos": ["todos", "comercial"] },
+  { "id": "bruno", "nome": "Bruno Costa",  "area": "Engenharia de Produto",   "grupos": ["todos", "engenharia"] },
+  { "id": "carla", "nome": "Carla Mendes", "area": "Segurança da Informação", "grupos": ["todos", "seguranca", "engenharia"] },
+  { "id": "diego", "nome": "Diego Ramos",  "area": "Diretoria",               "grupos": ["todos", "diretoria", "comercial"] }
+]

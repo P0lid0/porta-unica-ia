@@ -1,0 +1,22 @@
+{
+  "name": "porta-unica-ia",
+  "private": true,
+  "type": "module",
+  "description": "Porta única de IA: gateway com guardrails determinísticos, mascaramento reversível de dado sensível, busca com permissão e teste de vazamento. Demo com empresa fictícia.",
+  "scripts": {
+    "indexar": "node --env-file-if-exists=.env scripts/indexar.ts",
+    "gerar-questionario": "node scripts/gerar-questionario.ts",
+    "questionario": "node --env-file-if-exists=.env scripts/rodar-questionario.ts",
+    "pregravar": "node --env-file-if-exists=.env scripts/pregravar.ts",
+    "teste-vazamento": "node --env-file-if-exists=.env scripts/teste-vazamento.ts",
+    "start": "node --env-file-if-exists=.env src/servidor.ts"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
+    "exceljs": "^4.4.0"
+  },
+  "license": "MIT"
+}

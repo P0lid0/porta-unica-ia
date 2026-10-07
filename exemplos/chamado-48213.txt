@@ -1,0 +1,9 @@
+Chamado 48213 (FICTÍCIO)
+Cliente: Banco Aurora
+Aberto por: Marina Couto (marina.couto@bancoaurora.com.br), CPF 529.982.247-25
+Ambiente: LPAR de produção, servidor 10.20.30.41
+
+Desde a atualização de ontem, o job CALCJURN termina com abend S0C7 no STEP020 ao ler o arquivo PRD.COBR.PARCELAS.ABERTAS.
+O lote noturno de cobrança está atrasado e a área de negócio pede previsão de solução.
+Na validação usamos a conta de teste ag 1234 conta 98765-4 e o erro se repetiu.
+Impacto: cerca de 120 mil parcelas não processadas.

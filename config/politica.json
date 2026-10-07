@@ -1,0 +1,53 @@
+{
+  "_comentario": "A política é configuração versionada, não um PDF. Fase 1: sem servidor interno, tudo que sai vai para modelo externo contratado (retenção zero, sem treino), e o que é sensível sai mascarado ou não sai. Fase 2: com servidor interno, classes 3 e 4 passam a rodar dentro de casa. Sem classe = classe 3.",
+  "rotulos": {
+    "0-publico":      { "indexar": true,  "nome": "Classe 0 (público)",             "descricao": "Já publicado ou destinado à publicação" },
+    "1-interno":      { "indexar": true,  "nome": "Classe 1 (interno)",             "descricao": "Uso interno, sem dado pessoal nem de cliente" },
+    "2-confidencial": { "indexar": true,  "nome": "Classe 2 (confidencial)",        "descricao": "Confidencial da empresa sem dado de cliente" },
+    "3-cliente":      { "indexar": false, "nome": "Classe 3 (cliente)",             "descricao": "Vem de/descreve ambiente de banco ou tem dado pessoal: coleção segregada por cliente, fora da base geral" },
+    "4-ip-critico":   { "indexar": true,  "nome": "Classe 4 (código e IP crítico)", "descricao": "Código-fonte, segredo industrial ou documentação interna de produto; código nunca é indexado" }
+  },
+  "fases": {
+    "1": {
+      "nome": "Hoje: sem servidor interno",
+      "classes": {
+        "0-publico": "externo", "1-interno": "externo", "2-confidencial": "externo",
+        "3-cliente": "mascarado",
+        "4-ip-critico": "retido"
+      },
+      "entrada": {
+        "segredo":           { "destino": "bloqueado", "motivo": "Credencial ou chave no texto: segredo nunca é processado (troque a credencial)" },
+        "codigo_patenteado": { "destino": "bloqueado", "motivo": "Código patenteado: não sai da empresa; na Fase 2 roda no servidor interno, só para a Engenharia" },
+        "codigo":            { "destino": "bloqueado", "motivo": "Código-fonte não sai da empresa; documentar legado entra na Fase 2, com o servidor interno" },
+        "dado_pessoal":      { "destino": "mascarado", "motivo": "Classe 3: CPF/CNPJ trocado por código antes de sair; a tabela de volta fica na empresa" },
+        "nome_cliente":      { "destino": "mascarado", "motivo": "Classe 3: nome de cliente trocado por código antes de sair" },
+        "identificador":     { "destino": "mascarado", "motivo": "Identificadores técnicos (e-mail, IP, conta, dataset de produção) trocados por código antes de sair" }
+      }
+    },
+    "2": {
+      "nome": "Evolução: com servidor interno",
+      "classes": {
+        "0-publico": "externo", "1-interno": "externo", "2-confidencial": "externo",
+        "3-cliente": "local",
+        "4-ip-critico": "local"
+      },
+      "entrada": {
+        "segredo":           { "destino": "bloqueado", "motivo": "Credencial ou chave no texto: segredo nunca é processado (troque a credencial)" },
+        "codigo_patenteado": { "destino": "local", "grupos_autorizados": ["engenharia"], "motivo": "Código patenteado: só no servidor interno e só para a Engenharia", "motivo_bloqueio": "Código patenteado colado por quem não é da Engenharia: bloqueado e registrado para a Segurança" },
+        "codigo":            { "destino": "local", "motivo": "Código-fonte: processado só no servidor interno" },
+        "dado_pessoal":      { "destino": "local", "motivo": "Classe 3: dado pessoal processado só no servidor interno" },
+        "nome_cliente":      { "destino": "local", "motivo": "Classe 3: contexto de cliente processado só no servidor interno" },
+        "identificador":     { "destino": "local", "motivo": "Identificadores técnicos de cliente processados só no servidor interno" }
+      }
+    }
+  },
+  "clientes": ["Banco Aurora", "Banco Meridiano", "Credsul Pagamentos", "Cooperativa Vale Verde"],
+  "linha_de_base": {
+    "_comentario": "Premissas para a estimativa de ROI. Trocar pelos números medidos na linha de base real.",
+    "minutos_manual_por_pergunta_questionario": 12,
+    "minutos_revisao_por_pergunta": 2,
+    "minutos_manual_documentar_programa": 240,
+    "minutos_revisao_documentacao": 45,
+    "custo_hora_profissional_reais": 90
+  }
+}
